@@ -1,15 +1,5 @@
 from models import Owner, Pet, Task, Priority, ScheduledTask, Plan
 
-
-'''
-   class Scheduler {
-        +Owner owner
-        +Pet pet
-        +list~Task~ tasks
-        +build_plan() Plan
-        +sort_by_priority() list~Task~
-    }
-'''
 class Scheduler:
     """Builds a daily care plan from an owner's available time and a task list."""
     def __init__(self, owner, tasks):
