@@ -3,10 +3,7 @@ from datetime import time
 from models import Owner, Pet, Task, Priority
 from scheduler import Scheduler
 
-
-# ---------------------------------------------------------------------------
 # Basics (happy paths)
-# ---------------------------------------------------------------------------
 
 def test_mark_complete_changes_status():
     t = Task("Walk", 30, Priority.HIGH)
@@ -21,10 +18,7 @@ def test_add_task_increases_count():
     pet.add_task(Task("Feed", 10, Priority.HIGH))
     assert len(pet.tasks) == 1
 
-
-# ---------------------------------------------------------------------------
 # Sorting correctness
-# ---------------------------------------------------------------------------
 
 def test_sort_by_time_is_chronological():
     """Tasks with fixed times come back earliest-first."""
@@ -52,10 +46,7 @@ def test_sort_by_priority_high_first():
         Priority.HIGH, Priority.MEDIUM, Priority.LOW,
     ]
 
-
-# ---------------------------------------------------------------------------
 # Filtering (by status and by pet)
-# ---------------------------------------------------------------------------
 
 def test_pending_excludes_completed_tasks():
     done = Task("Walk", 20, Priority.HIGH)
@@ -76,10 +67,7 @@ def test_for_pet_returns_only_that_pets_tasks():
     assert s.for_pet(cat) == [cat_task]
     assert s.for_pet(dog) == [dog_task]
 
-
-# ---------------------------------------------------------------------------
 # Conflict detection
-# ---------------------------------------------------------------------------
 
 def test_conflicts_flags_identical_times():
     """Two tasks at the exact same time overlap."""
@@ -91,15 +79,15 @@ def test_conflicts_flags_identical_times():
 
 
 def test_conflicts_flags_partial_overlap():
-    a = Task("Walk", 30, Priority.HIGH, fixed_time=time(8, 0))    # 8:00–8:30
-    b = Task("Meds", 10, Priority.MEDIUM, fixed_time=time(8, 15))  # 8:15–8:25
+    a = Task("Walk", 30, Priority.HIGH, fixed_time=time(8, 0))   
+    b = Task("Meds", 10, Priority.MEDIUM, fixed_time=time(8, 15))  
     s = Scheduler(Owner("A", 120), [a, b])
     assert s.conflicts(a, b) is True
 
 
 def test_no_conflict_when_back_to_back():
-    a = Task("Walk", 30, Priority.HIGH, fixed_time=time(8, 0))    # 8:00–8:30
-    b = Task("Meds", 10, Priority.MEDIUM, fixed_time=time(8, 30))  # 8:30–8:40
+    a = Task("Walk", 30, Priority.HIGH, fixed_time=time(8, 0))   
+    b = Task("Meds", 10, Priority.MEDIUM, fixed_time=time(8, 30)) 
     s = Scheduler(Owner("A", 120), [a, b])
     assert s.conflicts(a, b) is False
     assert s.find_conflicts() == []
@@ -110,11 +98,8 @@ def test_flexible_tasks_never_conflict():
     b = Task("Groom", 20, Priority.LOW, fixed_time=time(8, 0))
     s = Scheduler(Owner("A", 60), [a, b])
     assert s.conflicts(a, b) is False
-
-
-# ---------------------------------------------------------------------------
+    
 # Recurrence
-# ---------------------------------------------------------------------------
 
 def test_completing_daily_task_creates_next_occurrence():
     """Marking a daily task complete queues a fresh task for the next day."""
@@ -150,14 +135,11 @@ def test_tasks_for_day_respects_frequency():
     wednesday = Task("Vet", 45, Priority.HIGH, frequency="weekly", weekday=2)
     s = Scheduler(Owner("A", 120), [daily, monday, wednesday])
 
-    assert [t.title for t in s.tasks_for_day(0)] == ["Walk", "Groom"]   # Monday
-    assert [t.title for t in s.tasks_for_day(2)] == ["Walk", "Vet"]     # Wednesday
-    assert [t.title for t in s.tasks_for_day(4)] == ["Walk"]            # Friday
+    assert [t.title for t in s.tasks_for_day(0)] == ["Walk", "Groom"]   
+    assert [t.title for t in s.tasks_for_day(2)] == ["Walk", "Vet"]    
+    assert [t.title for t in s.tasks_for_day(4)] == ["Walk"]          
 
-
-# ---------------------------------------------------------------------------
 # Plan building (integration) + edge cases
-# ---------------------------------------------------------------------------
 
 def test_build_plan_empty_task_list():
     """A pet with no tasks produces an empty plan, not an error."""
@@ -169,7 +151,7 @@ def test_build_plan_empty_task_list():
 
 def test_build_plan_drops_overflow_task():
     walk = Task("Walk", 40, Priority.HIGH)
-    groom = Task("Groom", 30, Priority.LOW)        # 40 + 30 > 60 budget
+    groom = Task("Groom", 30, Priority.LOW)       
     plan = Scheduler(Owner("A", 60), [walk, groom]).build_plan()
     assert [st.task.title for st in plan.scheduled] == ["Walk"]
     assert [(t.title, r) for t, r in plan.dropped] == [("Groom", "not enough time left")]
