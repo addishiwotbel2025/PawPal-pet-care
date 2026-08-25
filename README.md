@@ -48,3 +48,8 @@ PawPal-pet-care/
 ├── tests/              # Automated tests
 └── requirements.txt    # Project dependencies
 
+## My Contributions
+
+I designed and implemented the scheduling system behind PawPal+, including priority-based planning, time-budget management, conflict detection, recurring tasks, and explainable scheduling decisions.
+
+I also built the Streamlit interface and wrote automated tests covering core scheduling behavior and edge cases.
