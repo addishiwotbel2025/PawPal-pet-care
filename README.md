@@ -47,7 +47,7 @@ PawPal-pet-care/
 ├── pawpal_system.py    # Core scheduling logic
 ├── tests/              # Automated tests
 └── requirements.txt    # Project dependencies
-
+```
 ## My Contributions
 
 I designed and implemented the scheduling system behind PawPal+, including priority-based planning, time-budget management, conflict detection, recurring tasks, and explainable scheduling decisions.
